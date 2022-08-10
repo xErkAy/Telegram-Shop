@@ -1,0 +1,66 @@
+version: '3.7'
+
+services:
+  chat_app:
+    container_name: chat_app
+    restart: always
+    build: ./chat_app
+    volumes:
+      - ./chat_app:/chat_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - django
+    networks:
+      - bridge
+
+  django:
+    container_name: django
+    restart: always
+    build: ./shop
+    ports:
+      - 8000:8000/tcp
+    volumes:
+      - ./shop:/shop
+    depends_on:
+      - db
+    networks:
+      - bridge
+
+  db:
+    container_name: db
+    image: postgres:14
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=shop_database
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    networks:
+      - bridge
+
+  pgadmin:
+    container_name: pgadmin
+    restart: always
+    image: dpage/pgadmin4
+    ports:
+      - 5050:5050/tcp
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
+    depends_on:
+      - db
+    networks:
+      - bridge
+
+
+volumes:
+  pgdata:
+
+networks:
+  bridge:
+    driver: bridge

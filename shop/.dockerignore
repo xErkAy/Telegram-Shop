@@ -1,0 +1,9 @@
+cron
+*.md
+*.git*
+**/*.doc*
+**/*.xls*
+!reports/templates/*.xlsx
+**/*.zip
+**/*.pdf
+**/*.csv
