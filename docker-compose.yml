@@ -7,6 +7,8 @@ services:
     build: ./chat_app
     volumes:
       - ./chat_app:/chat_app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     ports:
       - "8080:8080"
     depends_on:

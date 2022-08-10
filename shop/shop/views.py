@@ -20,7 +20,7 @@ class GetSpecificOrder(ListAPIView):
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return Orders.objects.filter(order_id=self.kwargs['order_id']).order_by("-date")
+        return Orders.objects.filter(order_id=self.kwargs['order_id'])
 
 class GetMessages(ListAPIView):
     queryset = Messages.objects.all()
