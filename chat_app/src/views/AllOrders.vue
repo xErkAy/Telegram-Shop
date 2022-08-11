@@ -11,7 +11,17 @@
             <h3 class="fw-bold">Заказ №{{ item.order_id }}</h3>
             <div><span class="fw-bold">Имя:</span> {{ item.user.first_name }}</div>
             <div><span class="fw-bold">Статус:</span> {{ getOrderStatus(item.status, item.is_closed) }}</div>
-            <div><span class="fw-bold">Заказано</span> {{ convertDate(item.date) }}</div>
+            <div class="d-flex justify-space-between align-center">
+              <div><span class="fw-bold">Заказано</span> {{ convertDate(item.date) }}</div>
+              <v-btn
+                @click="changeStatus(item)"
+                v-if="item.status === 1"
+                color="red"
+              >Принять заказ</v-btn>
+              <v-btn
+                v-else
+              >Подробнее</v-btn>
+            </div>
         </div>
       </div>
     </div>
@@ -55,17 +65,10 @@ export default {
         return 'закрыт'
       }
       return this.statusNames.find(obj => status == obj.value).name
-    }
+    },
+    changeStatus(item) {
+      
+    },
   }
 }
 </script>
-
-<style scoped>
-.box {
-  font-size: 18px;
-  border-style: solid;
-  border-radius: 2%;
-  margin-bottom: 1%;
-  padding: 1%;
-}
-</style>
