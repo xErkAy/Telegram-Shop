@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -11,6 +12,7 @@ var bot, err = tgbotapi.NewBotAPI("5288667624:AAFBARM244Me22WXxZiTbK1r8kTfqAgM01
 func main() {
 	go checkErrors(err)
 	go checkErrors(db_err)
+	go socketHandler()
 	defer db.Close()
 
 	bot.Debug = true
@@ -25,6 +27,16 @@ func main() {
 			continue
 		}
 		go UserHandler(update)
+	}
+}
+
+func socketHandler() {
+	listener, _ := net.Listen("tcp", "192.168.88.57:8001")
+	for {
+		connection, err := listener.Accept()
+		if err == nil {
+			go handleSocketConnection(connection)
+		}
 	}
 }
 

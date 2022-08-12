@@ -13,6 +13,7 @@ class Users(models.Model):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+
 class Orders(models.Model):
     order_id = models.IntegerField(primary_key=True, verbose_name="ID заказа")
     user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
@@ -35,6 +36,7 @@ class Orders(models.Model):
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+
 
 class Messages(models.Model):
     user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)

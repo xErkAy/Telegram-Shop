@@ -13,3 +13,8 @@ type User struct {
 	user_name  string
 	first_name string
 }
+
+type Notify struct {
+	User_id int    `json:"user_id"`
+	Message string `json:"message_text"`
+}
