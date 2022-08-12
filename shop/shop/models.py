@@ -19,7 +19,7 @@ class Orders(models.Model):
     order_value = models.CharField(max_length=200, verbose_name="Заказ")
     status = models.SmallIntegerField(verbose_name="Статус заказа")
     is_closed = models.BooleanField(verbose_name="Заказ выполнен")
-    date = models.DateTimeField(verbose_name="Дата и время заказа", auto_now=True)
+    date = models.DateTimeField(verbose_name="Дата и время заказа", auto_now_add=True)
 
     def __str__(self):
         return f'[{self.user_id.user_name}] Заказ №{self.order_id}'
@@ -42,7 +42,7 @@ class Messages(models.Model):
     message_text = models.CharField(max_length=200, verbose_name="Текст сообщения")
     is_sender = models.BooleanField(verbose_name="Является ли пользователь отправителем?")
     is_read = models.BooleanField(verbose_name="Сообщение прочитано?")
-    date = models.DateTimeField(verbose_name="Дата и время отправки", auto_now=True)
+    date = models.DateTimeField(verbose_name="Дата и время отправки", auto_now_add=True)
 
     def __str__(self):
         return f'{self.user_id} {self.message_text}'
