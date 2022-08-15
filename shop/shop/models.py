@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Users(models.Model):
-    user_id = models.IntegerField(primary_key=True, verbose_name="ID пользователя")
+    user_id = models.BigIntegerField(primary_key=True, verbose_name="ID пользователя")
     user_name = models.TextField(verbose_name="@ пользователя", max_length=40)
     first_name = models.TextField(verbose_name="Имя пользователя", null=True, max_length=40)
 
@@ -15,9 +15,9 @@ class Users(models.Model):
 
 
 class Orders(models.Model):
-    order_id = models.IntegerField(primary_key=True, verbose_name="ID заказа")
+    order_id = models.AutoField(primary_key=True, verbose_name="ID заказа")
     user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
-    order_value = models.CharField(max_length=200, verbose_name="Заказ")
+    order_value = models.CharField(max_length=200, verbose_name="Содержимое заказа")
     status = models.SmallIntegerField(verbose_name="Статус заказа")
     is_closed = models.BooleanField(verbose_name="Заказ выполнен")
     date = models.DateTimeField(verbose_name="Дата и время заказа", auto_now_add=True)
@@ -39,6 +39,7 @@ class Orders(models.Model):
 
 
 class Messages(models.Model):
+    message_id = models.BigAutoField(primary_key=True, verbose_name="ID сообщения")
     user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
     order_id = models.ForeignKey("Orders", verbose_name="ID заказа", on_delete=models.CASCADE)
     message_text = models.CharField(max_length=200, verbose_name="Текст сообщения")

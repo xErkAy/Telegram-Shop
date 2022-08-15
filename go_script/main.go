@@ -39,7 +39,7 @@ func main() {
 }
 
 func socketHandler() {
-	listener, _ := net.Listen("tcp", "192.168.88.57:8001")
+	listener, _ := net.Listen("tcp", "192.168.1.63:8001")
 	for {
 		connection, err := listener.Accept()
 		if err == nil {

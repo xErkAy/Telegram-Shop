@@ -70,5 +70,5 @@ get_order_status = ['', 'готовится', 'готов к выдаче', 'в�
 
 def SendMessage(message):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-        client.connect(("192.168.88.57", 8001))
+        client.connect(("192.168.1.63", 8001))
         client.send(json.dumps(message).encode("utf-8"))
