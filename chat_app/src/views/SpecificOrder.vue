@@ -47,7 +47,7 @@ export default {
       statusNames: [
         { name: 'готовится', value: '2', color: 'orange' },
         { name: 'готов к выдаче', value: '3', color: 'green' },
-        { name: 'завершен', value: '4', color: 'red' },
+        { name: 'выдан', value: '4', color: 'red' },
       ],
       selectedStatus: '',
       order_color: '',
@@ -102,7 +102,7 @@ export default {
           (err) => {
             this.$notify({
               type: "error",
-              text: "Произошла ошибка"
+              text: "Ошибка смены статуса/уведомления пользователя"
             })
           }
         )

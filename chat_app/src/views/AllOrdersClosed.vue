@@ -9,7 +9,7 @@
           <div class="p-3 p-lg-3 pt-lg-3">
             <h3 class="fw-bold">Заказ №{{ item.order_id }}</h3>
             <div><span class="fw-bold">Имя:</span> {{ item.user.first_name }}</div>
-            <div><span class="fw-bold">Статус:</span> <span style="color: red">завершен</span></div>
+            <div><span class="fw-bold">Статус:</span> <span style="color: red">выдан</span></div>
             <div class="d-flex justify-space-between align-center">
               <div><span class="fw-bold">Заказано</span> {{ convertDate(item.date) }}</div>
               <v-btn

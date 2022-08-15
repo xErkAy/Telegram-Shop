@@ -65,7 +65,7 @@ class GetMessages(ListAPIView):
         return Response(MessagesSerializer(messages, many=True).data)
 
 
-get_order_status = ['', 'готовится', 'готов к выдаче', 'завершен']
+get_order_status = ['', 'готовится', 'готов к выдаче', 'выдан']
 
 
 def SendMessage(message):

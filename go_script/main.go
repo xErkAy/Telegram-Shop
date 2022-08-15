@@ -8,6 +8,15 @@ import (
 )
 
 var bot, err = tgbotapi.NewBotAPI("5288667624:AAFBARM244Me22WXxZiTbK1r8kTfqAgM01I")
+var keyboard = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Сделать заказ", "makeorder"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть меню", "getmenu"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть статусы заказов", "getordersstatus"),
+	),
+)
 
 func main() {
 	go checkErrors(err)
@@ -23,10 +32,9 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		if update.Message == nil {
-			continue
+		if update.Message != nil || update.CallbackQuery != nil {
+			go UserHandler(update)
 		}
-		go UserHandler(update)
 	}
 }
 

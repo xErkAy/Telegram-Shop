@@ -18,3 +18,8 @@ type Notify struct {
 	User_id int    `json:"user_id"`
 	Message string `json:"message_text"`
 }
+
+type Order struct {
+	order_id int64
+	status   int
+}

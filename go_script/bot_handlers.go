@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -9,34 +10,36 @@ import (
 )
 
 var db, db_err = sql.Open("postgres", "host=localhost port=5432 user=admin password=admin dbname=shop_database sslmode=disable")
+var status = [3]string{"не взят в работу", "готовится", "готов к выдаче"}
 
 func UserHandler(update tgbotapi.Update) {
 	// if !update.Message.IsCommand() {
 	// 	return
 	// }
 
+	if update.CallbackQuery != nil {
+		if update.CallbackQuery.Data == "makeorder" {
+			go SendMessage(update.CallbackQuery.Message.Chat.ID, "Временно недоступно.")
+		} else if update.CallbackQuery.Data == "getmenu" {
+			go SendDocument(update.CallbackQuery.Message.Chat.ID, "menu.pdf")
+		} else if update.CallbackQuery.Data == "getordersstatus" {
+			response, _ := db.Query("SELECT order_id, status FROM shop_orders WHERE user_id_id=$1 and is_closed=FALSE", update.CallbackQuery.From.ID)
+			go SendOrdersStatus(response, update.CallbackQuery.From.ID)
+		}
+		return
+	}
+
 	chat := Chat{update.Message.Chat.ID, update.Message.MessageID, strconv.FormatInt(update.Message.From.ID, 10), string(update.Message.From.UserName), string(update.Message.From.FirstName)}
 
 	switch update.Message.Command() {
-	case "start":
+	default:
 		response, _ := db.Query("SELECT * FROM shop_users WHERE user_id = $1", chat.user_id)
 		if isUserNew(response, chat) {
 			SendMessage(chat.ID, "Добро пожаловать, "+chat.first_name+"!")
 		} else {
 			go updateUserInfo(response, chat)
 		}
-		go SendHelpMessage(chat.ID)
-
-	case "help":
-		response, _ := db.Query("SELECT * FROM shop_users WHERE user_id = $1", chat.user_id)
-		go updateUserInfo(response, chat)
-		go SendHelpMessage(chat.ID)
-
-	case "menu":
-		go SendDocument(chat.ID, "menu.pdf")
-
-	default:
-		go ReplyToMessageID(chat.ID, chat.messageID, "Неизвестная команда.")
+		go SendKeyboard(chat.ID)
 	}
 }
 
@@ -77,5 +80,21 @@ func updateUserInfo(response *sql.Rows, chat Chat) {
 				break
 			}
 		}
+	}
+}
+
+func SendOrdersStatus(response *sql.Rows, ChatID int64) {
+	result := "[Статусы]"
+	for response.Next() {
+		res := Order{}
+		response.Scan(&res.order_id, &res.status)
+		result += fmt.Sprintf("\nЗаказ №%d - %s", res.order_id, status[res.status-1])
+	}
+	response.Close()
+
+	if result == "[Статусы]" {
+		go SendMessage(ChatID, "Нет активных заказов.")
+	} else {
+		go SendMessage(ChatID, result)
 	}
 }
