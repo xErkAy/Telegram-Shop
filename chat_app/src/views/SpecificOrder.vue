@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row pt-lg-1 rounded-3 border shadow-lg" style="width: 60%">
+    <div class="row pt-lg-1 rounded-3 border shadow-lg">
       <div class="p-3 p-lg-3 pt-lg-3">
         <div class="d-flex justify-space-between align-center">
           <h3 class="fw-bold">Заказ №{{ item.order_id }}</h3>

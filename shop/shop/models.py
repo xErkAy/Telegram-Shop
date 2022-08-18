@@ -44,7 +44,6 @@ class Messages(models.Model):
     order_id = models.ForeignKey("Orders", verbose_name="ID заказа", on_delete=models.CASCADE)
     message_text = models.CharField(max_length=200, verbose_name="Текст сообщения")
     is_sender = models.BooleanField(verbose_name="Является ли пользователь отправителем?")
-    is_read = models.BooleanField(verbose_name="Сообщение прочитано?")
     date = models.DateTimeField(verbose_name="Дата и время отправки", auto_now_add=True)
 
     def __str__(self):
@@ -53,3 +52,19 @@ class Messages(models.Model):
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
+
+class MessagesActivity(models.Model):
+    order_id = models.OneToOneField("Orders", primary_key=True, verbose_name="ID заказа", on_delete=models.CASCADE)
+    user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
+    is_active = models.BooleanField(verbose_name="Активная переписка")
+
+    def __str__(self):
+        return f'{self.order_id}. Статус - {self.is_active}'
+
+    @property
+    def get_activity(self):
+        return self.is_active
+
+    class Meta:
+        verbose_name = "Активная переписка"
+        verbose_name_plural = "Активные переписки"

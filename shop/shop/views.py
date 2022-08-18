@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import MessagesSerializer, UsersSerializer, OrderSerializer
-from .models import Messages, Users, Orders
+from .models import Messages, Users, Orders, MessagesActivity
 
 
 class GetUsers(ListAPIView):
@@ -41,34 +41,54 @@ class ChangeOrderStatus(APIView):
 
             obj = Orders.objects.get(user_id=user_id, order_id=order_id)
             obj.status = order_status
-            if is_closed is not None:
-                obj.is_closed = is_closed
+            obj.is_closed = is_closed
             obj.save()
 
-            if is_closed:
-                order_status = 4
-            message = {
-                'user_id': user_id,
-                'message_text': f'[Уведомление]\nСтатус заказа №{order_id} изменен на: {get_order_status[order_status - 1]}'
-            }
-            SendMessage(message)
-            return Response(status=status.HTTP_200_OK)
+            try:
+                if is_closed:
+                    order_status = 4
+                message = {
+                    'user_id': user_id,
+                    'message_text': f'[Уведомление]\nСтатус заказа №{order_id} изменен на: {get_order_status[order_status - 1]}'
+                }
+                SendMessage(message)
+                return Response(data={"message": "Статус заказа изменен"}, status=status.HTTP_200_OK)
+            except:
+                return Response(data={"message": "Ошибка уведомления пользователя"}, status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Ошибка изменения статуса"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetMessages(ListAPIView):
     queryset = Messages.objects.all()
+    serializer_class = MessagesSerializer
 
     def get(self, request, *args, **kwargs):
         messages = self.queryset.filter(user_id=kwargs["user_id"]).order_by("-date")[0:100]
-        return Response(MessagesSerializer(messages, many=True).data)
+        return Response(self.serializer_class(messages, many=True).data)
 
+class CreateMessages(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data
+            user_id = data.get("user_id")
+            order_id = data.get("order_id")
+            message_text = data.get("message_text")
+            is_sender = data.get("is_sender")
+            if isinstance(is_sender, str):
+                is_sender = bool(data.get("is_sender"))
+            activity = MessagesActivity.objects.get(order_id=Orders(order_id=order_id), user_id=Users(user_id=user_id))
+            if activity.get_activity:
+                Messages.objects.create(user_id=Users(user_id=user_id), order_id=Orders(order_id=order_id), message_text=message_text, is_sender=is_sender)
+                return Response(data={"message": "ы"}, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_201_CREATED)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 get_order_status = ['', 'готовится', 'готов к выдаче', 'выдан']
 
 
 def SendMessage(message):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-        client.connect(("192.168.1.63", 8001))
+        client.connect(("192.168.88.57", 8001))
         client.send(json.dumps(message).encode("utf-8"))

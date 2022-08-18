@@ -17,4 +17,4 @@ class OrderSerializer(serializers.ModelSerializer):
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Messages
-        exclude = ("id", )
+        exclude = ("message_id", )

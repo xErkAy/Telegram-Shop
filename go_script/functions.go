@@ -2,14 +2,20 @@ package main
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
+var keyboard = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Сделать заказ", "makeorder"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть меню", "getmenu"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть статусы заказов", "getordersstatus"),
+	),
+)
+
 func SendKeyboard(ChatID int64) {
 	message := tgbotapi.NewMessage(ChatID, "Что вы хотите сделать?")
 	message.ReplyMarkup = keyboard
 	bot.Send(message)
-}
-
-func SendHelpMessage(ChatID int64) {
-	bot.Send(tgbotapi.NewMessage(ChatID, "Доступные команды:\n/help - справка\n/menu - получить меню\n/start - оформить заказ"))
 }
 
 func SendMessage(ChatID int64, message string) {

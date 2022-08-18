@@ -15,11 +15,17 @@ type User struct {
 }
 
 type Notify struct {
-	User_id int    `json:"user_id"`
+	User_id int64  `json:"user_id"`
 	Message string `json:"message_text"`
 }
 
 type Order struct {
 	order_id int64
 	status   int
+}
+
+type ActiveOrder struct {
+	user_id   int64
+	order_id  int
+	is_active bool
 }
