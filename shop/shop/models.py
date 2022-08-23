@@ -21,6 +21,11 @@ class Orders(models.Model):
     status = models.SmallIntegerField(verbose_name="Статус заказа")
     is_closed = models.BooleanField(verbose_name="Заказ выполнен")
     date = models.DateTimeField(verbose_name="Дата и время заказа", auto_now_add=True)
+    is_chat_active = models.BooleanField(verbose_name="Активная переписка")
+
+    @property
+    def get_chat_activity(self):
+        return self.is_chat_active
 
     def __str__(self):
         return f'[{self.user_id.user_name}] Заказ №{self.order_id}'
@@ -47,24 +52,8 @@ class Messages(models.Model):
     date = models.DateTimeField(verbose_name="Дата и время отправки", auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user_id} {self.message_text}'
+        return f'{self.order_id}: {self.message_text}'
 
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
-
-class MessagesActivity(models.Model):
-    order_id = models.OneToOneField("Orders", primary_key=True, verbose_name="ID заказа", on_delete=models.CASCADE)
-    user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
-    is_active = models.BooleanField(verbose_name="Активная переписка")
-
-    def __str__(self):
-        return f'{self.order_id}. Статус - {self.is_active}'
-
-    @property
-    def get_activity(self):
-        return self.is_active
-
-    class Meta:
-        verbose_name = "Активная переписка"
-        verbose_name_plural = "Активные переписки"

@@ -40,12 +40,12 @@ func updateUserInfo(response *sql.Rows, chat Chat) {
 }
 
 func isActiveChat(chat Chat) (bool, int) {
-	res := ActiveOrder{}
+	res := Order{}
 
-	response, _ := db.Query("SELECT * FROM shop_messagesactivity WHERE user_id_id=$1", chat.user_id)
+	response, _ := db.Query("SELECT is_chat_active, order_id FROM shop_orders WHERE user_id_id=$1 AND is_chat_active=TRUE", chat.user_id)
 	response.Next()
-	response.Scan(&res.is_active, &res.order_id, &res.user_id)
+	response.Scan(&res.is_chat_active, &res.order_id)
 	response.Close()
 
-	return res.is_active, res.order_id
+	return res.is_chat_active, res.order_id
 }

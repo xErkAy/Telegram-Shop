@@ -12,7 +12,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Orders
-        exclude = ("user_id", )
+        exclude = ("user_id", "is_chat_active")
 
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:

@@ -20,12 +20,9 @@ type Notify struct {
 }
 
 type Order struct {
-	order_id int64
-	status   int
-}
-
-type ActiveOrder struct {
-	user_id   int64
-	order_id  int
-	is_active bool
+	user_id            int64
+	order_id           int
+	status             int
+	is_chat_active     bool
+	is_order_receiving bool
 }

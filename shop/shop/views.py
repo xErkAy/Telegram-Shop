@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import MessagesSerializer, UsersSerializer, OrderSerializer
-from .models import Messages, Users, Orders, MessagesActivity
+from .models import Messages, Users, Orders
 
 
 class GetUsers(ListAPIView):
@@ -52,11 +52,11 @@ class ChangeOrderStatus(APIView):
                     'message_text': f'[Уведомление]\nСтатус заказа №{order_id} изменен на: {get_order_status[order_status - 1]}'
                 }
                 SendMessage(message)
-                return Response(data={"message": "Статус заказа изменен"}, status=status.HTTP_200_OK)
+                return Response(data={"message": "Статус заказа изменен", "type": "success"}, status=status.HTTP_200_OK)
             except:
-                return Response(data={"message": "Ошибка уведомления пользователя"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={"message": "Ошибка уведомления пользователя", "type": "error"}, status=status.HTTP_400_BAD_REQUEST)
         except ObjectDoesNotExist:
-            return Response({"message": "Ошибка изменения статуса"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Ошибка изменения статуса", "type": "error"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetMessages(ListAPIView):
@@ -74,14 +74,22 @@ class CreateMessages(APIView):
             user_id = data.get("user_id")
             order_id = data.get("order_id")
             message_text = data.get("message_text")
-            is_sender = data.get("is_sender")
-            if isinstance(is_sender, str):
-                is_sender = bool(data.get("is_sender"))
-            activity = MessagesActivity.objects.get(order_id=Orders(order_id=order_id), user_id=Users(user_id=user_id))
-            if activity.get_activity:
+            is_sender = bool(data.get("is_sender"))
+            activity = Orders.objects.get(order_id=order_id, user_id=Users(user_id=user_id))
+            if activity.get_chat_activity:
                 Messages.objects.create(user_id=Users(user_id=user_id), order_id=Orders(order_id=order_id), message_text=message_text, is_sender=is_sender)
-                return Response(data={"message": "ы"}, status=status.HTTP_200_OK)
-            return Response(status=status.HTTP_201_CREATED)
+                if not is_sender:
+                    try:
+                        message = {
+                            'user_id': int(user_id),
+                            'message_text': f'[Оператор к заказу №{order_id}]\n{message_text}'
+                        }
+                        SendMessage(message)
+                    except:
+                        return Response(data={"message": "Ошибка уведомления пользователя", "type": "error"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(data={"message": "Чат неактивен", "type": "error"}, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

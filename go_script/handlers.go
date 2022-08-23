@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"net/url"
@@ -60,6 +61,7 @@ func handleSocketConnection(connection net.Conn) {
 
 	json_err := json.Unmarshal(bytes.Trim(data, "'\x00'"), &chat)
 	if json_err != nil {
+		fmt.Println(json_err)
 		return
 	}
 

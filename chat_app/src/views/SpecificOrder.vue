@@ -95,14 +95,14 @@ export default {
         .then(
           (res) => {
             this.$notify({
-              type: "success",
-              text: "Статус заказа изменен"
+              type: res.response.data.type,
+              text: res.response.data.message
             })
           },
           (err) => {
             this.$notify({
-              type: "error",
-              text: "Ошибка смены статуса/уведомления пользователя"
+              type: err.response.data.type,
+              text: err.response.data.message
             })
           }
         )
