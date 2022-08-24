@@ -5,6 +5,7 @@ class Users(models.Model):
     user_id = models.BigIntegerField(primary_key=True, verbose_name="ID пользователя")
     user_name = models.TextField(verbose_name="@ пользователя", max_length=40)
     first_name = models.TextField(verbose_name="Имя пользователя", null=True, max_length=40)
+    is_order_active = models.BooleanField(verbose_name="Сбор данных по заказу", default=False)
 
     def __str__(self):
         return f'[{self.user_name}] {self.first_name}'
@@ -19,9 +20,9 @@ class Orders(models.Model):
     user_id = models.ForeignKey("Users", verbose_name="ID пользователя", on_delete=models.CASCADE)
     order_value = models.CharField(max_length=200, verbose_name="Содержимое заказа")
     status = models.SmallIntegerField(verbose_name="Статус заказа")
-    is_closed = models.BooleanField(verbose_name="Заказ выполнен")
+    is_closed = models.BooleanField(verbose_name="Заказ выполнен", default=False)
     date = models.DateTimeField(verbose_name="Дата и время заказа", auto_now_add=True)
-    is_chat_active = models.BooleanField(verbose_name="Активная переписка")
+    is_chat_active = models.BooleanField(verbose_name="Активная переписка", default=False)
 
     @property
     def get_chat_activity(self):

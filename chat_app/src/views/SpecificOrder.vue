@@ -95,8 +95,8 @@ export default {
         .then(
           (res) => {
             this.$notify({
-              type: res.response.data.type,
-              text: res.response.data.message
+              type: res.data.type,
+              text: res.data.message
             })
           },
           (err) => {

@@ -22,6 +22,16 @@ class GetAllOrders(ListAPIView):
             return Orders.objects.filter(is_closed=True).order_by("-date")
         return Orders.objects.filter(is_closed=False).order_by("-date")
 
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            user_id = data.get("user_id")
+            order_value = data.get("order_value")
+            Orders.objects.create(user_id=Users(user_id=user_id), order_value=order_value, status=1)
+            return Response(data={"message": f"Заказ №{Orders.objects.latest('order_id').order_id} успешно создан."}, status=status.HTTP_200_OK)
+        except:
+            return Response(data={"message": "Произошла ошибка при создании заказа."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GetSpecificOrder(ListAPIView):
     serializer_class = OrderSerializer
@@ -37,11 +47,12 @@ class ChangeOrderStatus(APIView):
             user_id = data.get("user_id")
             order_id = data.get("order_id")
             order_status = data.get("status")
-            is_closed = data.get("is_closed")
+            is_closed = data.get("is_closed", None)
 
             obj = Orders.objects.get(user_id=user_id, order_id=order_id)
             obj.status = order_status
-            obj.is_closed = is_closed
+            if is_closed is not None:
+                obj.is_closed = is_closed
             obj.save()
 
             try:
@@ -74,7 +85,7 @@ class CreateMessages(APIView):
             user_id = data.get("user_id")
             order_id = data.get("order_id")
             message_text = data.get("message_text")
-            is_sender = bool(data.get("is_sender"))
+            is_sender = False
             activity = Orders.objects.get(order_id=order_id, user_id=Users(user_id=user_id))
             if activity.get_chat_activity:
                 Messages.objects.create(user_id=Users(user_id=user_id), order_id=Orders(order_id=order_id), message_text=message_text, is_sender=is_sender)

@@ -18,8 +18,8 @@ func UserHandler(update tgbotapi.Update) {
 
 	switch update.Message.Command() {
 	default:
-		is_active, order_id := isActiveChat(chat)
-		if is_active {
+		is_chat_active, order_id := isActiveChat(chat.ID)
+		if is_chat_active {
 			formData := url.Values{
 				"user_id":      {chat.user_id},
 				"order_id":     {strconv.Itoa(order_id)},
@@ -30,11 +30,18 @@ func UserHandler(update tgbotapi.Update) {
 			return
 		}
 
-		response, _ := db.Query("SELECT * FROM shop_users WHERE user_id=$1", chat.user_id)
-		if isUserNew(response, chat) {
+		if isOrderActive(chat.ID) {
+			makeNewOrder(chat.ID, update.Message.Text)
+			return
+		}
+
+		is_new, err := isUserNew(chat)
+		if err != nil {
+			SendMessage(chat.ID, "Произошла ошибка. Попробуйте еще раз.")
+			return
+		}
+		if is_new {
 			SendMessage(chat.ID, "Добро пожаловать, "+chat.first_name+"!")
-		} else {
-			go updateUserInfo(response, chat)
 		}
 		go SendKeyboard(chat.ID)
 	}
@@ -42,7 +49,20 @@ func UserHandler(update tgbotapi.Update) {
 
 func CallbackQueryHandler(update tgbotapi.Update) {
 	if update.CallbackQuery.Data == "makeorder" {
-		go SendMessage(update.CallbackQuery.Message.Chat.ID, "Временно недоступно.")
+		user_id := update.CallbackQuery.Message.Chat.ID
+		is_chat_active, _ := isActiveChat(user_id)
+		if is_chat_active {
+			go SendMessage(user_id, "У вас активный чат! Завершите его, чтобы сделать новый заказ.")
+			return
+		}
+
+		if isOrderActive(user_id) {
+			go SendMessage(user_id, "Завершите предыдущий заказ, чтобы сделать новый.")
+			return
+		}
+
+		go makeOrderActive(user_id)
+
 	} else if update.CallbackQuery.Data == "getmenu" {
 		go SendDocument(update.CallbackQuery.Message.Chat.ID, "menu.pdf")
 	} else if update.CallbackQuery.Data == "getordersstatus" {
