@@ -85,7 +85,7 @@ class CreateMessages(APIView):
             user_id = data.get("user_id")
             order_id = data.get("order_id")
             message_text = data.get("message_text")
-            is_sender = False
+            is_sender = data.get("is_sender")
             activity = Orders.objects.get(order_id=order_id, user_id=Users(user_id=user_id))
             if activity.get_chat_activity:
                 Messages.objects.create(user_id=Users(user_id=user_id), order_id=Orders(order_id=order_id), message_text=message_text, is_sender=is_sender)
