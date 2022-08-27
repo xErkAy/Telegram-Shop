@@ -76,7 +76,7 @@ func makeOrderActive(user_id int64) {
 	if err != nil {
 		go SendMessage(user_id, "Произошла ошибка. Попробуйте еще раз.")
 	} else {
-		go SendMessage(user_id, "Пожалуйста, введите Ваш заказ ОДНИМ текстом.")
+		go SendMessage(user_id, "Пожалуйста, введите Ваш заказ ОДНИМ сообщением.")
 	}
 }
 
