@@ -10,19 +10,17 @@
             <h3 class="fw-bold">Заказ №{{ item.order_id }}</h3>
             <div><span class="fw-bold">Имя:</span> {{ item.user.first_name }}</div>
             <div><span class="fw-bold">Статус:</span> <span :style="`color: ${getOrderColorByStatus(item.status)}`">{{ getOrderStatus(item.status) }}</span></div>
-            <div class="d-flex justify-space-between align-center">
-              <div><span class="fw-bold">Заказано</span> {{ convertDate(item.date) }}</div>
-              <div>
-                <v-btn
-                  @click="acceptOrder(item)"
-                  v-if="item.status === 1"
-                  color="red"
-                >Принять заказ</v-btn>
-                <v-btn
-                  v-else
-                  @click="goToSpecificOrder(item.order_id)"
-                >Подробнее</v-btn>
-              </div>
+            <div><span class="fw-bold">Заказано</span> {{ convertDate(item.date) }}</div>
+            <div style="float: right;">
+              <v-btn
+                @click="acceptOrder(item)"
+                v-if="item.status === 1"
+                color="red"
+              >Принять заказ</v-btn>
+              <v-btn
+                v-else
+                @click="goToSpecificOrder(item.order_id)"
+              >Подробнее</v-btn>
             </div>
         </div>
       </div>

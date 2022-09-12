@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const instance = axios.create({
-    baseURL: 'http://localhost:8000/api/',
+    baseURL: 'http://192.168.88.57:8000/api/',
 })
 
 export const getAllOrders = params => instance.get('orders/', { params })

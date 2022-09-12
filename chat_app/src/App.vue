@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <notifications position="top right" />
+    <notifications position="bottom right" />
     <div class="container">
       <div class="pb-3 mb-4 mt-2 border-bottom">
         <router-link to="/" class="d-flex align-items-center text-dark text-decoration-none">
