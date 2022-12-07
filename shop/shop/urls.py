@@ -1,12 +1,16 @@
 from django.urls import path
-from . import views
-
+from shop.views import (
+    GetUsers,
+    CreateMessages,
+    GetMessages,
+    GetAllOrders,
+    GetSpecificOrder
+)
 
 urlpatterns = [
-    path('users/', views.GetUsers.as_view()),
-    path('messages/', views.CreateMessages.as_view()),
-    path('messages/<int:user_id>/', views.GetMessages.as_view()),
-    path('orders/', views.GetAllOrders.as_view()),
-    path('orders/<int:order_id>/', views.GetSpecificOrder.as_view()),
-    path('orders/changestatus/', views.ChangeOrderStatus.as_view()),
+    path('users/', GetUsers.as_view()),
+    path('messages/', CreateMessages.as_view()),
+    path('messages/<int:user_id>/', GetMessages.as_view()),
+    path('orders/', GetAllOrders.as_view()),
+    path('orders/<int:pk>/', GetSpecificOrder.as_view()),
 ]

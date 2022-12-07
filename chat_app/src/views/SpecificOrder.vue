@@ -59,7 +59,7 @@ export default {
   methods: {
     async getSpecificOrderList() {
       const response = await getSpecificOrder(this.$route.params.id)
-      this.item = response.data[0]
+      this.item = response.data
       this.selectedStatus = this.getOrderStatus(this.item.status, this.item.is_closed)
       this.order_color = this.statusNames.find(obj => this.selectedStatus == obj.value).color
     },
@@ -86,10 +86,12 @@ export default {
         status = parseInt(this.selectedStatus)
       }
       const payload = {
-        user_id: this.item.user.user_id,
         order_id: this.item.order_id,
-        status: status,
-        is_closed: is_closed
+        data: {
+          user_id: this.item.user.user_id,
+          status: status,
+          is_closed: is_closed
+        }
       }
       changeOrderStatus(payload)
         .then(

@@ -1,11 +1,8 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-y(p=57hnc53c^*6+p%%s4*aqz70xums_eaeof7adyqei$i6%t^'
@@ -15,13 +12,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'project.exception_handler.custom_exception_handler',
+}
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://localhost:8080',
-    'http://192.168.88.57:8000',
     'http://192.168.88.57:8080',
+    'https://172.20.10.8:8080'
 ]
-
 
 # Application definition
 
@@ -108,9 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

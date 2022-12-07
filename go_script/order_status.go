@@ -13,7 +13,7 @@ func SendOrdersStatus(ChatID int64) {
 		order_id     int
 		order_status int
 	)
-	response, _ := db.Query("SELECT order_id, status FROM shop_orders WHERE user_id_id=$1 and is_closed=FALSE", ChatID)
+	response, _ := db.Query("SELECT order_id, status FROM shop_order WHERE user_id_id=$1 and is_closed=FALSE", ChatID)
 
 	result := "[Статусы]"
 	for response.Next() {

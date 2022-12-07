@@ -65,10 +65,10 @@ export default {
       return `${date[0]} в ${date[1]}`
     },
     getOrderStatus(status) {
-      return this.statusNames.find(obj => status == obj.value).name
+      return this.statusNames.find(obj => status === obj.value).name
     },
     getOrderColorByStatus(status) {
-      return this.statusNames.find(obj => status == obj.value).color
+      return this.statusNames.find(obj => status === obj.value).color
     },
     goToSpecificOrder(id) {
       this.$router.push({path: '/' + id})
@@ -76,29 +76,29 @@ export default {
     getAllOrdersClosed() {
       this.$router.push({path: '/closed'})
     },
-    acceptOrder(item) {
-      const payload = {
-        user_id: item.user.user_id,
-        order_id: item.order_id,
-        status: 2,
-      }
-      changeOrderStatus(payload)
-        .then(
-          (res) => {
-            this.$notify({
+    async acceptOrder(item) {
+      try {
+        const payload = {
+          order_id: item.order_id,
+          data: {
+            user_id: item.user.user_id,
+            status: 2,
+          }
+        }
+        const response = await changeOrderStatus(payload)
+        this.$notify({
               type: 'success',
               text: 'Заказ принят'
             })
-            const findObj = this.items.find(i => i.order_id === item.order_id)
-            findObj ? findObj.status = payload.status : ''
-          },
-          (err) => {
-            this.$notify({
-              type: 'error',
-              text: 'Произошла ошибка'
-            })
-          }
-        )
+        const findObj = this.items.find(i => i.order_id === item.order_id)
+        findObj ? findObj.status = 2 : ''
+      } catch (error) {
+        console.log(error)
+        this.$notify({
+          type: 'error',
+          text: error.response.data.message
+        })
+      }
     },
     updateOrders() {
       this.intervalId = setInterval(() => {
