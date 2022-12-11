@@ -37,7 +37,7 @@ class GetAllOrders(ListAPIView):
         data.is_valid(raise_exception=True)
         obj = Order.objects.create(user_id=User(user_id=data.validated_data.get('user_id')),
                                                 order_value=data.validated_data.get('order_value'), status=1)
-        return Response(data={"message": f"Заказ №{obj.order_id} успешно создан."}, status=status.HTTP_200_OK)
+        return Response(data={"message": f"Заказ №{obj.order_id} успешно создан.", "type": "success"}, status=status.HTTP_200_OK)
 
 
 class GetSpecificOrder(RetrieveUpdateAPIView):
