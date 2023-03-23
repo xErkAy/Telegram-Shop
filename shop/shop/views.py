@@ -35,8 +35,13 @@ class GetAllOrders(ListAPIView):
     def post(self, request, *args, **kwargs):
         data = CreateOrderSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        obj = Order.objects.create(user_id=User(user_id=data.validated_data.get('user_id')),
-                                                order_value=data.validated_data.get('order_value'), status=1)
+        user_id = data.validated_data.get('user_id')
+        try:
+            user = User.objects.get(user_id=user_id)
+        except ObjectDoesNotExist:
+            raise ValidationExceptionWithMessage('Пользователь не существует.')
+        order_value = data.validated_data.get('order_value')
+        obj = Order.objects.create(user_id=user, order_value=order_value, status=1)
         return Response(data={"message": f"Заказ №{obj.order_id} успешно создан.", "type": "success"}, status=status.HTTP_200_OK)
 
 
@@ -114,5 +119,5 @@ class CreateMessages(APIView):
 
 def SendMessage(message):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-        client.connect(("192.168.1.63", 8001))
+        client.connect(("localhost", 8001))
         client.send(json.dumps(message).encode("utf-8"))

@@ -32,7 +32,7 @@
 import {
   getAllOrders,
   changeOrderStatus,
-} from '@/api/index'
+} from '@/api'
 
 export default {
   name: 'AllOrders',
@@ -42,9 +42,9 @@ export default {
       updatedTime: 5000,
       intervalId: undefined,
       statusNames: [
-        { name: 'не взят в работу', value: '1', color: 'black' },
-        { name: 'готовится', value: '2', color: 'orange' },
-        { name: 'готов к выдаче', value: '3', color: 'green' },
+        { name: 'не взят в работу', value: 1, color: 'black' },
+        { name: 'готовится', value: 2, color: 'orange' },
+        { name: 'готов к выдаче', value: 3, color: 'green' },
       ],
     }
   },
@@ -85,7 +85,7 @@ export default {
             status: 2,
           }
         }
-        const response = await changeOrderStatus(payload)
+        await changeOrderStatus(payload)
         this.$notify({
               type: 'success',
               text: 'Заказ принят'
